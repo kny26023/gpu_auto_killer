@@ -1,0 +1,14 @@
+[Unit]
+Description=GPU Auto Killer
+
+[Service]
+# Command to execute when the service is started
+User=root
+#Put your gpu_auto_killer_final.py path at YOUR_PATH
+ExecStart=/usr/bin/python YOUR_PATH
+#Put your working directory path at YOUR_PATH
+WorkingDirectory= YOUR_PATH
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
