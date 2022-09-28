@@ -25,9 +25,9 @@ headers = {
 }
 
 while(True):
+    start= time.time()
     #iterate for each process to check in list
     for PROCESS_TOCHECK in KILLLIST:
-        start= time.time()
         #pid
         PID=PROCESS_TOCHECK
 
