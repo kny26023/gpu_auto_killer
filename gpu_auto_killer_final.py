@@ -49,7 +49,7 @@ while(True):
         #Fetch other process stats by pid
         #GPU Memory Usage
         GPU="nvidia-smi | grep %s | sort -k 8 -r | head -n 1 | awk '{print $8}'" %(PID)
-        GPU= str(subprocess.run(GPU, stdout=subprocess.PIPE, shell=True).stdout).lstrip("b'").rstrip("MiB\\n'")
+        GPU= str(subprocess.run(GPU, stdout=subprocess.PIPE, shell=True).stdout).lstrip("b'").rstrip("MiB\\n'").
         GPU= int(GPU)
 
         #GPU Utilization
