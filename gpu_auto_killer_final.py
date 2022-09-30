@@ -24,6 +24,8 @@ while(True):
     #process command name to check
     KILLCMD="nvidia-smi -q -d PIDs | grep 'Process ID' | awk '{print $4}'"
     KILLLIST= str(subprocess.run(KILLCMD, stdout=subprocess.PIPE, shell=True).stdout).lstrip("b'").rstrip("\\n'").split("\\n")
+    if(KILLLIST[0]==""):
+        continue
     KILLLIST= list(map(int, KILLLIST))
     start = time.time()
     #iterate for each process to check in list
