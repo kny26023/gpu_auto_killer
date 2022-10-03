@@ -35,13 +35,15 @@ while(True):
         if(PID not in TIME_LIST):
             TIME_LIST[PID]= 0
         #user
+        USER= ""
         TEMP="cat /proc/{PID}/cgroup | grep 'name' | tr '/' '\n'".format(PID=PID)
         TEMP= str(subprocess.run(TEMP, stdout=subprocess.PIPE, shell=True).stdout)
         TEMP2= list(TEMP.split("\\n"))
-        TEMP2= TEMP2[2]
-        TEMP3="docker ps -f id=%s --format '{{.Names}}'" % (TEMP2)
-        USER= str(subprocess.run(TEMP3, stdout=subprocess.PIPE, shell=True).stdout)
-        USER= USER.lstrip("b'").rstrip("\\n'").rstrip("")
+        if(len(TEMP[2])>=2):
+            TEMP2= TEMP2[2]
+            TEMP3="docker ps -f id=%s --format '{{.Names}}'" % (TEMP2)
+            USER= str(subprocess.run(TEMP3, stdout=subprocess.PIPE, shell=True).stdout)
+            USER= USER.lstrip("b'").rstrip("\\n'").rstrip("")
 
         if (USER == "root"):
             continue
@@ -49,7 +51,7 @@ while(True):
         #Fetch other process stats by pid
         #GPU Memory Usage
         GPU="nvidia-smi | grep %s | sort -k 8 -r | head -n 1 | awk '{print $8}'" %(PID)
-        GPU= str(subprocess.run(GPU, stdout=subprocess.PIPE, shell=True).stdout).lstrip("b'").rstrip("MiB\\n'").
+        GPU= str(subprocess.run(GPU, stdout=subprocess.PIPE, shell=True).stdout).lstrip("b'").rstrip("MiB\\n'").rstrip("GiB\\n'")
         GPU= int(GPU)
 
         #GPU Utilization
@@ -73,7 +75,7 @@ while(True):
             #print(f"PID: {PID} User: USER used {GPU}MiB of GPU Memory with no utilization.")
             if(TIME_LIST[PID] >= MAX_SEC):
                 json="{'text': 'GPU load from process ( PID: %d ) User: %s used %dMiB of GPU Memory with no utilization. Process was killed.'}" %(PID, USER, GPU)
-                response = requests.post('YOUR_SLACK_WEBHOOK', headers=headers, data=json) #Put your Slack webhook at YOUR_SLACK_WEBHOOK
+                response = requests.post('https://hooks.slack.com/services/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', headers=headers, data=json)
                 kill= "kill -15 %d" %(PID)
                 subprocess.run(kill, shell=True)
                 subprocess.run("sleep 3", shell=True)
